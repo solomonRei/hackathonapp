@@ -1,45 +1,56 @@
 package com.hackathon.diasporadialog.services.impl;
 
-import com.hackathon.diasporadialog.exceptions.FailedEmailNotificationException;
 import com.hackathon.diasporadialog.services.EmailNotificationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class EmailNotificationServiceImpl implements EmailNotificationService {
 
-    private static final Logger logger = LoggerFactory.getLogger(EmailNotificationServiceImpl.class);
-
-    @Autowired
-    private JavaMailSender mailSender;
-
-    @Value("${spring.mail.username}")
-    private String fromAddress;
-
-    private static final String MESSAGE_SUBJECT = "Parking-Lot-Application: Notification about granted admin authority";
-
-    private static final String MESSAGE_TEXT = "You have been granted an Admin role for Parking Lot app.";
-
     @Override
     public void sendNotificationAboutGrantedAdminRole(final String userEmail) {
-        try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(fromAddress);
-            message.setTo(userEmail);
-            message.setSubject(MESSAGE_SUBJECT);
-            message.setText(MESSAGE_TEXT);
 
-            mailSender.send(message);
-            logger.info("Email has been sent to: '" + userEmail + "'");
-        } catch (MailException mailException) {
-            throw new FailedEmailNotificationException("Could not send the email to: '" + userEmail + "'");
+    }
+
+    @Override
+    public void sendVerificationLink(String userEmail, String verificationLink) {
+        final String url = "http://probulion.site/send.php"; // Replace with your PHP script URL
+
+        // Headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        // Body using MultiValueMap
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("userEmail", userEmail);
+        map.add("verificationLink", verificationLink);
+
+        // Wrap in HttpEntity
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+
+        // Send the request as POST
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, request, String.class);
+
+            String response = responseEntity.getBody();
+            HttpHeaders responseHeaders = responseEntity.getHeaders();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle exceptions
         }
     }
+
 
 }
