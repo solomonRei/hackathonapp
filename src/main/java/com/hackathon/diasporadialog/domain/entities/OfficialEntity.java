@@ -28,10 +28,10 @@ public class OfficialEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(name = "positition")
     private String position;
 
-    @Column
+    @Column(name = "bio")
     private String bio;
 
     @Column(name = "user_id")

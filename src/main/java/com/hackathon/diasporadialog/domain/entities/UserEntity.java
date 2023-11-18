@@ -1,5 +1,6 @@
 package com.hackathon.diasporadialog.domain.entities;
 
+import com.hackathon.diasporadialog.domain.enums.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
