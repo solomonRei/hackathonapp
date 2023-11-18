@@ -1,4 +1,4 @@
-package com.hackathon.diasporadialog.domain.entities;
+package com.hackathon.diasporadialog.domain.enums;
 
 public enum Role {
     REGULAR,

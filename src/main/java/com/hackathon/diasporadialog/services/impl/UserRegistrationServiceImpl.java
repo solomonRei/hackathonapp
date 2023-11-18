@@ -2,7 +2,7 @@ package com.hackathon.diasporadialog.services.impl;
 
 import com.hackathon.diasporadialog.DTO.UserRegistrationDtoRequest;
 import com.hackathon.diasporadialog.DTO.UserRegistrationDtoResponse;
-import com.hackathon.diasporadialog.domain.entities.Role;
+import com.hackathon.diasporadialog.domain.enums.Role;
 import com.hackathon.diasporadialog.domain.entities.UserEntity;
 import com.hackathon.diasporadialog.domain.mappers.UserMapper;
 import com.hackathon.diasporadialog.domain.repositories.UserRepository;
