@@ -1,18 +1,10 @@
 package com.hackathon.diasporadialog.domain.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
 @Getter
@@ -27,12 +19,16 @@ public class MeetingEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "official_id")
-    private Long officialId;
+    @OneToOne
+    @JoinColumn(name = "official_id", referencedColumnName = "id")
+    private OfficialEntity official;
 
     @Column(name = "meeting_link")
     private String meetingLink;
 
     @Column(name = "meeting_date")
     private LocalDateTime meetingDate;
+
+    @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL)
+    private List<QuestionEntity> questions;
 }
