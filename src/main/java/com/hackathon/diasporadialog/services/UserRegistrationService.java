@@ -9,4 +9,6 @@ public interface UserRegistrationService {
     UserRegistrationDtoResponse register(UserRegistrationDtoRequest registrationDtoRequest);
 
     void grantAdminPermissions(Long id, String email);
+
+    boolean verifyUser(String token);
 }

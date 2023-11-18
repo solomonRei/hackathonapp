@@ -2,21 +2,22 @@ package com.hackathon.diasporadialog.services.impl;
 
 import com.hackathon.diasporadialog.DTO.UserRegistrationDtoRequest;
 import com.hackathon.diasporadialog.DTO.UserRegistrationDtoResponse;
+import com.hackathon.diasporadialog.domain.entities.Role;
+import com.hackathon.diasporadialog.domain.entities.UserEntity;
+import com.hackathon.diasporadialog.domain.mappers.UserMapper;
+import com.hackathon.diasporadialog.domain.repositories.UserRepository;
+import com.hackathon.diasporadialog.exceptions.EmailTokenErrorException;
 import com.hackathon.diasporadialog.exceptions.FailedEmailNotificationException;
 import com.hackathon.diasporadialog.exceptions.UserNotFoundException;
 import com.hackathon.diasporadialog.exceptions.UserNotGrantedToDoActionException;
 import com.hackathon.diasporadialog.exceptions.ValidationCustomException;
-import com.hackathon.diasporadialog.domain.mappers.UserMapper;
-import com.hackathon.diasporadialog.domain.entities.Role;
-import com.hackathon.diasporadialog.domain.entities.UserEntity;
-import com.hackathon.diasporadialog.domain.repositories.UserRepository;
 import com.hackathon.diasporadialog.services.EmailNotificationService;
 import com.hackathon.diasporadialog.services.UserRegistrationService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.EmailValidator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,9 +26,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class UserRegistrationServiceImpl implements UserRegistrationService {
+
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     private final UserRepository userRepository;
 
@@ -37,27 +44,27 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
 
     private final EmailNotificationService emailNotificationService;
 
-    private static final Logger logger = LoggerFactory.getLogger(UserRegistrationServiceImpl.class);
-
-    @Autowired
-    public UserRegistrationServiceImpl(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, EmailNotificationService emailNotificationService) {
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
-        this.passwordEncoder = passwordEncoder;
-        this.emailNotificationService = emailNotificationService;
-    }
-
     @Override
     public UserRegistrationDtoResponse register(UserRegistrationDtoRequest registrationDtoRequest) {
         UserEntity user;
+        var verificationToken = UUID.randomUUID().toString();
+        var tokenForVerificationLink = baseUrl + "/" + "authentication" + "/" + "verify?token=" + verificationToken;
         user = userMapper.mapRequestDtoToEntity(registrationDtoRequest);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setEnabled(true);
         user.setRole(Role.REGULAR);
+        user.setVerificationLink(verificationToken);
+
+        try {
+            emailNotificationService.sendVerificationLink(user.getEmail(), tokenForVerificationLink);
+        } catch (FailedEmailNotificationException failedEmailNotificationException) {
+            log.warn("Email was not sent, verification link for user: " + user.getEmail());
+        }
 
         return userMapper.mapEntityToResponseDto(userRepository.save(user));
     }
+
 
     private String getRole() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder
@@ -83,6 +90,17 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
         } else {
             throw new UserNotGrantedToDoActionException("User doesn't have authorities to do this action");
         }
+    }
+
+    @Transactional
+    public boolean verifyUser(String token) {
+        UserEntity user = userRepository.findByVerificationLink(token)
+                .orElseThrow(() -> new EmailTokenErrorException("Invalid verification token"));
+
+        user.setVerified(true);
+        userRepository.save(user);
+
+        return true;
     }
 
     @Transactional
@@ -123,7 +141,7 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
         try {
             emailNotificationService.sendNotificationAboutGrantedAdminRole(entity.getEmail());
         } catch (FailedEmailNotificationException failedEmailNotificationException) {
-            logger.warn("Email was not sent, admin permissions granted for user: " + entity.getEmail());
+            log.warn("Email was not sent, admin permissions granted for user: " + entity.getEmail());
         }
 
     }

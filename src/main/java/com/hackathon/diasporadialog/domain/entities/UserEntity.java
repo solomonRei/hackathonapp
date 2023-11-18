@@ -40,9 +40,16 @@ public class UserEntity {
     @Column(name = "phone_number", nullable = false)
     private String phone;
 
+    @Column(name = "verification_link")
+    private String verificationLink;
+
     @Column(name = "enabled", columnDefinition = "boolean default true")
     @ColumnDefault("true")
     private boolean enabled;
+
+    @Column(name = "is_verified", columnDefinition = "boolean default false")
+    @ColumnDefault("false")
+    private boolean verified;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
