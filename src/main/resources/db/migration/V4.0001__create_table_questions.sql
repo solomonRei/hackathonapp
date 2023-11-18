@@ -9,4 +9,4 @@ CREATE TABLE IF NOT EXISTS questions
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users_table (id),
     FOREIGN KEY (meeting_id) REFERENCES meetings (id)
-    );
+);
