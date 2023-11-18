@@ -1,6 +1,6 @@
 package com.hackathon.diasporadialog.DTO;
 
-import com.hackathon.diasporadialog.domain.entities.Role;
+import com.hackathon.diasporadialog.domain.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
