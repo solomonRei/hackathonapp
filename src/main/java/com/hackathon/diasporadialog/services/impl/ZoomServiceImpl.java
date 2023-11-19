@@ -1,6 +1,9 @@
 package com.hackathon.diasporadialog.services.impl;
 
+import com.hackathon.diasporadialog.DTO.zoom.MeetingDtoResponse;
 import com.hackathon.diasporadialog.DTO.zoom.ZoomMeetingDtoRequest;
+import com.hackathon.diasporadialog.domain.entities.MeetingEntity;
+import com.hackathon.diasporadialog.domain.repositories.MeetingRepository;
 import com.hackathon.diasporadialog.exceptions.meetings.ZoomTokenErrorException;
 import com.hackathon.diasporadialog.util.UserAuthorizedUtils;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +18,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Map;
 
@@ -23,7 +27,7 @@ import java.util.Map;
 @Service
 public class ZoomServiceImpl {
 
-    private final UserAuthorizedUtils userAuthorizedUtils;
+    private final MeetingRepository meetingRepository;
 
     private final String accountId = "yR0iKwOfTpuUfb8mXpAIag";
 
@@ -31,29 +35,50 @@ public class ZoomServiceImpl {
 
     private final String clientSecret = "5mMeUndPPgQO1KGORvWHBLOvKQiFwg1o";
 
-    public String createZoomMeeting(ZoomMeetingDtoRequest request) {
+    public ResponseEntity<MeetingDtoResponse> saveMeeting(ZoomMeetingDtoRequest zoomMeetingDtoRequest) {
+        var linkToZoom = createZoomMeeting(zoomMeetingDtoRequest);
+
+        var meetingEntity = new MeetingEntity();
+        meetingEntity.setMeetingLink(linkToZoom);
+        meetingEntity.setMeetingDate(LocalDateTime.parse(zoomMeetingDtoRequest.getStartTime()));
+
+        // Save the meeting entity to the database
+        meetingRepository.save(meetingEntity);
+
+        // Create a response DTO (assuming you have a constructor or setters in MeetingDtoResponse)
+        MeetingDtoResponse meetingDtoResponse = new MeetingDtoResponse();
+        meetingDtoResponse.setMeetingLink(linkToZoom);
+        // Set other properties in the DTO as required
+
+
+        return new ResponseEntity<>(meetingDtoResponse, HttpStatus.OK);
+    }
+
+    private String createZoomMeeting(ZoomMeetingDtoRequest request) {
         var accessToken = getAccessToken();
         System.out.println(accessToken);
 
-        if (accessToken == null) {
-            throw new ZoomTokenErrorException("Failed to retrieve access token from Zoom");
-        }
+        return "testMeeting";
 
-        var restTemplate = new RestTemplate();
-        var headers = new HttpHeaders();
-
-        headers.add("Authorization", "Bearer " + accessToken);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<ZoomMeetingDtoRequest> requestEntity = new HttpEntity<>(request, headers);
-
-        ResponseEntity<String> response = restTemplate.postForEntity(
-                "https://api.zoom.us/v2/users/me/meetings",
-                requestEntity,
-                String.class
-        );
-
-        return response.getBody();
+//        if (accessToken == null) {
+//            throw new ZoomTokenErrorException("Failed to retrieve access token from Zoom");
+//        }
+//
+//        var restTemplate = new RestTemplate();
+//        var headers = new HttpHeaders();
+//
+//        headers.add("Authorization", "Bearer " + accessToken);
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//        HttpEntity<ZoomMeetingDtoRequest> requestEntity = new HttpEntity<>(request, headers);
+//
+//        ResponseEntity<String> response = restTemplate.postForEntity(
+//                "https://api.zoom.us/v2/users/me/meetings",
+//                requestEntity,
+//                String.class
+//        );
+//
+//        return response.getBody();
     }
 
 

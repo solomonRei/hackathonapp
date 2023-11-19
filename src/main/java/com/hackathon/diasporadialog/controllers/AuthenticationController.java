@@ -3,6 +3,7 @@ package com.hackathon.diasporadialog.controllers;
 import com.hackathon.diasporadialog.DTO.auth.AuthAndRegistrationResponseDTO;
 import com.hackathon.diasporadialog.DTO.auth.AuthenticationDTO;
 import com.hackathon.diasporadialog.security.JWTUtil;
+import com.hackathon.diasporadialog.services.impl.OfficialServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,20 +27,23 @@ public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
 
+    private final OfficialServiceImpl officialService;
+
     @PostMapping(value = "/authenticate")
     public ResponseEntity<AuthAndRegistrationResponseDTO> authenticate(@RequestBody @Valid AuthenticationDTO authenticationDTO) {
-        String role = "";
+        var role = "";
         UsernamePasswordAuthenticationToken inputToken = new UsernamePasswordAuthenticationToken(
                 authenticationDTO.getEmail(), authenticationDTO.getPassword());
 
-        Authentication authentication = authenticationManager.authenticate(inputToken);
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        var authentication = authenticationManager.authenticate(inputToken);
+        var userDetails = (UserDetails) authentication.getPrincipal();
 
         for (GrantedAuthority authority : userDetails.getAuthorities()) {
             role = authority.getAuthority();
         }
 
-        String jwt = jwtUtil.generateAccessToken(authenticationDTO.getEmail());
+        var jwt = jwtUtil.generateAccessToken(authenticationDTO.getEmail());
+        officialService.createOfficial(userDetails.getUsername());
 
         AuthAndRegistrationResponseDTO response = new AuthAndRegistrationResponseDTO(
                 userDetails.getUsername(),
