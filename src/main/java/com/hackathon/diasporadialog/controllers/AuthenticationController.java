@@ -36,7 +36,7 @@ public class AuthenticationController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
         for (GrantedAuthority authority : userDetails.getAuthorities()) {
-            role = authority.getAuthority().substring(5);
+            role = authority.getAuthority();
         }
 
         String jwt = jwtUtil.generateAccessToken(authenticationDTO.getEmail());

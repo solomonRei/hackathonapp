@@ -2,6 +2,7 @@ package com.hackathon.diasporadialog.config;
 
 import com.hackathon.diasporadialog.security.filters.ExceptionHandlerFilter;
 import com.hackathon.diasporadialog.security.filters.JWTAuthenticationFilter;
+import com.hackathon.diasporadialog.security.filters.OnlyPoliticsEndpointCheckFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -36,6 +37,8 @@ public class SecurityConfig {
 
     private final JWTAuthenticationFilter jwtAuthenticationFilter;
 
+    private final OnlyPoliticsEndpointCheckFilter onlyPoliticsEndpointCheckFilter;
+
     private final ExceptionHandlerFilter exceptionHandlerFilter;
 
     private final UserDetailsService userDetailsService;
@@ -66,10 +69,11 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(exceptionHandlerFilter, JWTAuthenticationFilter.class)
+                .addFilterAfter(onlyPoliticsEndpointCheckFilter, JWTAuthenticationFilter.class)
                 .oauth2ResourceServer((oauth2) -> oauth2
-                        .jwt((jwt) -> jwt
-                                .decoder(jwtDecoder)
-                        ))
+                .jwt((jwt) -> jwt
+                        .decoder(jwtDecoder)
+                ))
                 .exceptionHandling(
                         (ex) -> ex.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
                                 .accessDeniedHandler(new BearerTokenAccessDeniedHandler()));
