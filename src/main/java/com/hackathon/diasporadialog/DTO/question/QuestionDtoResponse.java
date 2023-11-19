@@ -15,6 +15,8 @@ public class QuestionDtoResponse {
 
     private String questionText;
 
+    private String questionAuthor;
+
     private Long meetingId;
 
     private Long userId;

@@ -40,6 +40,7 @@ public class QuestionController {
     public QuestionDtoResponse createQuestion(@RequestBody @Valid QuestionCreateDtoRequest questionCreateDtoRequest) {
         return questionService.createQuestion(questionCreateDtoRequest);
     }
+
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping(value = "/vote")
     public void voteQuestion(@RequestParam Long questionId) {

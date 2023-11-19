@@ -56,6 +56,7 @@ public class QuestionServiceImpl implements QuestionService {
                 .questionId(questionEntity.getQuestionId())
                 .questionTitle(questionEntity.getQuestionTitle())
                 .questionText(questionEntity.getQuestionText())
+                .questionAuthor(questionEntity.getUser().getName())
                 .meetingId(questionEntity.getMeeting().getId())
                 .userId(questionEntity.getUser().getId())
                 .voteCount(questionEntity.getVoteCount())
@@ -66,8 +67,6 @@ public class QuestionServiceImpl implements QuestionService {
         var user = userAuthorizedUtils.getAuthenticatedUser();
         var question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new UserNotFoundException("Question not found with id: " + questionId));
-
-//        var getVote = voteRepository.findByUserIdAndQuestionId(user.getId(), questionId);
 
         var vote = VoteEntity.builder()
                 .questionId(questionId)

@@ -20,7 +20,7 @@ public class MeetingEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "official_id", referencedColumnName = "id")
     private OfficialEntity official;
 
