@@ -1,0 +1,21 @@
+package com.hackathon.diasporadialog.DTO.question;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+@Builder
+@Setter
+@Getter
+public class QuestionDtoResponse {
+    private String questionTitle;
+
+    private String questionText;
+
+    private Long meetingId;
+
+    private Long userId;
+
+    private Integer voteCount;
+
+}

@@ -1,5 +1,6 @@
 package com.hackathon.diasporadialog.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,6 +30,7 @@ public class MeetingEntity {
     @Column(name = "meeting_date")
     private LocalDateTime meetingDate;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL)
     private List<QuestionEntity> questions;
 }

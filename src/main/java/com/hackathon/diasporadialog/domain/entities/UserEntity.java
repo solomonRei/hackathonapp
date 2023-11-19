@@ -1,5 +1,6 @@
 package com.hackathon.diasporadialog.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hackathon.diasporadialog.domain.enums.Role;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -63,6 +64,7 @@ public class UserEntity {
     @Column(name = "role")
     private Role role;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<QuestionEntity> questions;
 }

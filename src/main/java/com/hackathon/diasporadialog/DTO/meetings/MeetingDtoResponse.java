@@ -1,6 +1,5 @@
 package com.hackathon.diasporadialog.DTO.meetings;
 
-import com.hackathon.diasporadialog.domain.entities.OfficialEntity;
 import com.hackathon.diasporadialog.domain.entities.QuestionEntity;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +12,8 @@ import java.util.List;
 @Getter
 @Setter
 public class MeetingDtoResponse {
+
+    private Long meetingId;
 
     private Long officialId;
 

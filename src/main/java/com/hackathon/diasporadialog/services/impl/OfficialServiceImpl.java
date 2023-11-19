@@ -22,26 +22,27 @@ public class OfficialServiceImpl {
 
     private final UserAuthorizedUtils userAuthorizedUtils;
 
-    public ProfileOfficialDtoResponse createOfficial(String username) {
+    public void createOfficial(String username) {
+
         var user = userRepository.findByEmail(username).orElseThrow(
                 () -> new UserNotFoundException("User not found")
         );
         log.info("Create official profile for user: {}", user.getName());
-        var official = OfficialEntity.builder()
-                .position("Your position")
-                .user(user)
-                .build();
 
-        officialRepository.save(official);
+        var optionalOfficial = officialRepository.findByUserId(user.getId());
+        if (optionalOfficial.isPresent()) {
+            log.info("Official profile already exists for user: {}", user.getName());
+        } else {
 
-        log.info("Official profile created for user: {}", user.getName());
-        return ProfileOfficialDtoResponse.builder()
-                .name(user.getName())
-                .email(user.getEmail())
-                .bio(official.getBio())
-                .position(official.getPosition())
-                .workPlace(official.getWorkPlace())
-                .build();
+            var official = OfficialEntity.builder()
+                    .position("Your position")
+                    .user(user)
+                    .build();
+
+            officialRepository.save(official);
+
+            log.info("Official profile created for user: {}", user.getName());
+        }
 
     }
 

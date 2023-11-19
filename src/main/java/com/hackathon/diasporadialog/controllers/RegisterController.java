@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -37,6 +38,7 @@ public class RegisterController {
 
     private final JWTUtil jwtUtil;
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping(value = "/register")
     public ResponseEntity<AuthAndRegistrationResponseDTO> register(@RequestBody @Valid UserRegistrationDtoRequest registrationDtoRequest,
                                                                    BindingResult bindingResult) {
@@ -68,6 +70,7 @@ public class RegisterController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/verify")
     public ResponseEntity<String> verifyUser(@RequestParam("token") String token) {
         boolean isVerified = userRegistrationService.verifyUser(token);
@@ -78,6 +81,7 @@ public class RegisterController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping("/grantAdmin")
     public ResponseEntity<HttpStatus> grantAdminPermissions(@RequestParam(value = "userId", required = false) Long userId,
                                                             @RequestParam(value = "email", required = false) String email) {

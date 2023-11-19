@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION get_officials_and_meetings(p_user_id INT)
     RETURNS TABLE (
                       official_id INT,
-                      official_name VARCHAR,
+                      official_work_place VARCHAR,
                       official_position VARCHAR,
                       official_bio TEXT,
                       meeting_id INT,
@@ -12,7 +12,7 @@ BEGIN
     RETURN QUERY
         SELECT
             o.id,
-            o.name,
+            o.work_place,
             o.position,
             o.bio,
             m.id,

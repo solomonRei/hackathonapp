@@ -1,5 +1,8 @@
 package com.hackathon.diasporadialog.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,10 +30,12 @@ public class QuestionEntity {
     @Column(name = "vote_count")
     private Integer voteCount;
 
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "meeting_id")
     private MeetingEntity meeting;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;

@@ -7,13 +7,14 @@ CREATE OR REPLACE FUNCTION get_filtered_questions(
     RETURNS SETOF questions AS $$
 DECLARE
     where_clause TEXT := '';
+    query TEXT;
 BEGIN
     IF p_meeting_id IS NOT NULL THEN
         where_clause := where_clause || ' AND meeting_id = ' || p_meeting_id::TEXT;
     END IF;
 
     IF p_question_id IS NOT NULL THEN
-        where_clause := where_clause || ' AND question_id = ' || p_question_id::TEXT;
+        where_clause := where_clause || ' AND id = ' || p_question_id::TEXT;
     END IF;
 
     IF p_user_id IS NOT NULL THEN
@@ -26,13 +27,11 @@ BEGIN
 
     IF LENGTH(where_clause) > 0 THEN
         where_clause := SUBSTRING(where_clause FROM 5);
+        query := 'SELECT * FROM questions WHERE ' || where_clause;
+    ELSE
+        query := 'SELECT * FROM questions';
     END IF;
 
-    RETURN QUERY EXECUTE 'SELECT * FROM questions WHERE ' || where_clause
-        USING p_meeting_id, p_question_id, p_user_id, p_title_filter;
-
-    IF where_clause = '' THEN
-        RETURN QUERY SELECT * FROM questions;
-    END IF;
+    RETURN QUERY EXECUTE query;
 END;
 $$ LANGUAGE plpgsql;

@@ -1,5 +1,6 @@
 package com.hackathon.diasporadialog.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,10 +38,12 @@ public class OfficialEntity {
     @Column(name = "work_place")
     private String workPlace;
 
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserEntity user;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "official", cascade = CascadeType.ALL)
     private MeetingEntity meeting;
 }

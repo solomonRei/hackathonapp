@@ -4,6 +4,7 @@ import com.hackathon.diasporadialog.DTO.meetings.MeetingCreateDtoRequest;
 import com.hackathon.diasporadialog.DTO.meetings.MeetingDtoResponse;
 import com.hackathon.diasporadialog.domain.entities.MeetingEntity;
 import com.hackathon.diasporadialog.domain.repositories.MeetingRepository;
+import com.hackathon.diasporadialog.domain.repositories.OfficialMeetingProjection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -35,9 +37,14 @@ public class MeetingServiceImpl {
         meetingRepository.save(meeting);
 
         return MeetingDtoResponse.builder()
+                .meetingId(meeting.getId())
                 .officialId(meeting.getOfficial().getId())
                 .meetingDate(meeting.getMeetingDate().toString())
                 .meetingLink(meeting.getMeetingLink())
                 .build();
+    }
+
+    public List<OfficialMeetingProjection> getOfficialsAndMeetings(Integer userId) {
+        return meetingRepository.getOfficialsAndMeetings(userId);
     }
 }
