@@ -52,6 +52,12 @@ public class MeetingController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping(value = "/all")
+    public List<MeetingDtoResponse> getMeetings() {
+        return meetingService.getMeetings();
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/official-meetings")
     public ResponseEntity<List<OfficialMeetingProjection>> getMeetings(@RequestParam Integer userId) {
         List<OfficialMeetingProjection> meetings = meetingService.getOfficialsAndMeetings(userId);
