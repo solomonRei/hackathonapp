@@ -1,4 +1,4 @@
-package com.hackathon.diasporadialog.controllers;
+package com.hackathon.diasporadialog.controllers.officials;
 
 import com.hackathon.diasporadialog.DTO.zoom.ZoomMeetingDtoRequest;
 import com.hackathon.diasporadialog.services.impl.ZoomServiceImpl;
@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,9 +20,9 @@ public class MeetingController {
 
     private final ZoomServiceImpl zoomService;
 
-    @GetMapping(value = "/zoom")
+    @PostMapping(value = "/create")
     public void register(@RequestBody @Valid ZoomMeetingDtoRequest zoomMeetingDtoRequest) {
-        var s = zoomService.createZoomMeeting(zoomMeetingDtoRequest);
-        System.out.println(s);
+        var linkToZoom = zoomService.saveMeeting(zoomMeetingDtoRequest);
+
     }
 }
