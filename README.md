@@ -1,8 +1,8 @@
-# Diaspora Dialog
+# Connect Moldova - Backend  ([Frontend](https://github.com/YourBestDream/Hackatonnn))
 
 ## About the Project
 
-Diaspora Dialog is an application by Team TechnoBees (team 9), aimed at enhancing the connection between the Moldovan diaspora and their homeland. This platform facilitates meaningful and direct communication between diaspora members and Moldova government officials.
+Connect Moldova is an application by Team TechnoBees (team 9), aimed at enhancing the connection between the Moldovan diaspora and their homeland. This platform facilitates meaningful and direct communication between diaspora members and Moldova government officials.
 
 ### Key Features
 
