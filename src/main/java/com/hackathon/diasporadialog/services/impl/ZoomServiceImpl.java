@@ -1,24 +1,19 @@
 package com.hackathon.diasporadialog.services.impl;
 
-import com.hackathon.diasporadialog.DTO.zoom.MeetingDtoResponse;
 import com.hackathon.diasporadialog.DTO.zoom.ZoomMeetingDtoRequest;
-import com.hackathon.diasporadialog.domain.entities.MeetingEntity;
 import com.hackathon.diasporadialog.domain.repositories.MeetingRepository;
 import com.hackathon.diasporadialog.exceptions.meetings.ZoomTokenErrorException;
-import com.hackathon.diasporadialog.util.UserAuthorizedUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Map;
 
@@ -35,26 +30,7 @@ public class ZoomServiceImpl {
 
     private final String clientSecret = "5mMeUndPPgQO1KGORvWHBLOvKQiFwg1o";
 
-    public ResponseEntity<MeetingDtoResponse> saveMeeting(ZoomMeetingDtoRequest zoomMeetingDtoRequest) {
-        var linkToZoom = createZoomMeeting(zoomMeetingDtoRequest);
-
-        var meetingEntity = new MeetingEntity();
-        meetingEntity.setMeetingLink(linkToZoom);
-        meetingEntity.setMeetingDate(LocalDateTime.parse(zoomMeetingDtoRequest.getStartTime()));
-
-        // Save the meeting entity to the database
-        meetingRepository.save(meetingEntity);
-
-        // Create a response DTO (assuming you have a constructor or setters in MeetingDtoResponse)
-        MeetingDtoResponse meetingDtoResponse = new MeetingDtoResponse();
-        meetingDtoResponse.setMeetingLink(linkToZoom);
-        // Set other properties in the DTO as required
-
-
-        return new ResponseEntity<>(meetingDtoResponse, HttpStatus.OK);
-    }
-
-    private String createZoomMeeting(ZoomMeetingDtoRequest request) {
+    public String createZoomMeeting(ZoomMeetingDtoRequest request) {
         var accessToken = getAccessToken();
         System.out.println(accessToken);
 

@@ -43,7 +43,10 @@ public class AuthenticationController {
         }
 
         var jwt = jwtUtil.generateAccessToken(authenticationDTO.getEmail());
-        officialService.createOfficial(userDetails.getUsername());
+
+        if (role.equals("OFFICIAL")) {
+            officialService.createOfficial(userDetails.getUsername());
+        }
 
         AuthAndRegistrationResponseDTO response = new AuthAndRegistrationResponseDTO(
                 userDetails.getUsername(),

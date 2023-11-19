@@ -28,11 +28,14 @@ public class OfficialEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "positition")
+    @Column(name = "position")
     private String position;
 
     @Column(name = "bio")
     private String bio;
+
+    @Column(name = "work_place")
+    private String workPlace;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")

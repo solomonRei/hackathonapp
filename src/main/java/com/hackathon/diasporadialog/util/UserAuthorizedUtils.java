@@ -2,6 +2,7 @@ package com.hackathon.diasporadialog.util;
 
 import com.hackathon.diasporadialog.domain.entities.UserEntity;
 import com.hackathon.diasporadialog.domain.repositories.UserRepository;
+import com.hackathon.diasporadialog.exceptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,20 +16,21 @@ import java.util.stream.Collectors;
 @Component
 public class UserAuthorizedUtils {
 
-    private static UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    public static UserEntity getAuthenticatedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        return userRepository.findByName(username);
+    public UserEntity getAuthenticatedUser() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var email = authentication.getName();
+        return userRepository.findByEmail(email).orElseThrow(
+                () -> new UserNotFoundException("User not found"));
     }
 
-    public static String getAuthenticatedUsername() {
+    public String getAuthenticatedEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();
     }
 
-    public static Collection<String> getAuthenticatedUserRoles() {
+    public Collection<String> getAuthenticatedUserRoles() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
