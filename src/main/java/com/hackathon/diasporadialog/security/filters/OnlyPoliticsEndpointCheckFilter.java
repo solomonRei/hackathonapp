@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 public class OnlyPoliticsEndpointCheckFilter extends OncePerRequestFilter {
 
     private final List<Pattern> officialEndpoints = List.of(
-            Pattern.compile("^.*/api/v1/meetings/create$")
+            Pattern.compile("^.*/api/v1/meetings/creatert$")
     );
 
     @Override

@@ -11,4 +11,6 @@ public interface QuestionService {
     List<QuestionEntity> getFilteredQuestions(Integer meetingId, Integer questionId, Integer userId, String titleFilter);
 
     QuestionDtoResponse createQuestion(QuestionCreateDtoRequest questionCreateDtoRequest);
+
+    void voteQuestion(Long questionId);
 }

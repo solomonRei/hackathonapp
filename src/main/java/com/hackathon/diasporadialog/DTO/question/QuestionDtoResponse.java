@@ -8,6 +8,9 @@ import lombok.Setter;
 @Setter
 @Getter
 public class QuestionDtoResponse {
+
+    private Long questionId;
+
     private String questionTitle;
 
     private String questionText;

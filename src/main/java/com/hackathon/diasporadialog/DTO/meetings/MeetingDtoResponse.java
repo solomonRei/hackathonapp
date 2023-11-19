@@ -21,6 +21,10 @@ public class MeetingDtoResponse {
 
     private String meetingLink;
 
+    private String name;
+
+    private String surname;
+
     private List<QuestionEntity> questions = new ArrayList<>();
 
 }
